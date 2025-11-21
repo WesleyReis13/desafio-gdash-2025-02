@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { WeatherModule } from './weather/weather.module';
 
 @Module({
-  imports: [],
+  imports: [
+    MongooseModule.forRoot('mongodb://admin:password123@mongodb:27017/weather_db?authSource=admin'),
+    WeatherModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
