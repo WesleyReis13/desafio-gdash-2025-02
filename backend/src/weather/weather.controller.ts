@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { WeatherService } from './weather.service';
 import { Weather } from './schemas/weather.schema';
+import { CreateWeatherDto } from './dto/create-weather.dto';
 
 @Controller('weather')
 export class WeatherController {
@@ -8,6 +9,16 @@ export class WeatherController {
 
   @Post()
   async create(@Body() weatherData: Partial<Weather>): Promise<Weather> {
+    return this.weatherService.create(weatherData);
+  }
+
+  @Post('collect')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async collectWeatherData(@Body() createWeatherDto: CreateWeatherDto): Promise<Weather> {
+    const weatherData = {
+      ...createWeatherDto,
+      timestamp: createWeatherDto.timestamp || new Date(),
+    };
     return this.weatherService.create(weatherData);
   }
 
